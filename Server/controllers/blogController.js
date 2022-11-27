@@ -1,5 +1,6 @@
-// Call with Database
+// Call with Database and operation with database
 const slugify = require('slugify')
+const Blogs = require('../models/blogs')
 // Save Data
 exports.create = (req, res) => {
     const {title,content,author} = req.body
@@ -14,8 +15,12 @@ exports.create = (req, res) => {
             return res.status(400).json({err:"กรุณาป้อนเนื้อหาบทความ"})
             break;
     }
-    res.json({
-        data: {title,content,author,slug}
+    //Save Data
+    Blogs.create({title,content,author,slug},(err, blog) => {
+        if(err){
+            res.status(400).json({err:"มีบทความชื่อซ้ำกัน"})
+        }
+        res.json(blog)
     })
 }
 
