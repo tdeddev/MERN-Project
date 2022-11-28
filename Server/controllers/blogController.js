@@ -1,27 +1,46 @@
 // Call with Database and operation with database
 const slugify = require('slugify')
 const Blogs = require('../models/blogs')
+const {v4: uuidv4} = require('uuid')
 // Save Data
 exports.create = (req, res) => {
     const {title,content,author} = req.body
-    const slug = slugify(title)
+    let slug = slugify(title)
 
-    //Validate / ตรวจสอบความถูกต้องของข้อมูล
+    if(!slug){
+        slug = uuidv4();
+    }
+
     switch(true){
         case !title:
-            return res.status(400).json({err:"กรุณาป้อนชื่อบทความ"})
+            return res.status(400).json({error:"กรุณาป้อนชื่อบทความ"})
             break;
         case !content:
-            return res.status(400).json({err:"กรุณาป้อนเนื้อหาบทความ"})
+            return res.status(400).json({error:"กรุณาป้อนเนื้อหาบทความ"})
             break;
     }
-    //Save Data
     Blogs.create({title,content,author,slug},(err, blog) => {
         if(err){
-            res.status(400).json({err:"มีบทความชื่อซ้ำกัน"})
+            res.status(400).json({error:"มีชื่อบทความซ้ำกัน"})
         }
         res.json(blog)
     })
+    
 }
 
-//localhost:5500//install-postman
+//ดึงข้อมูลบทความทั้งหทด
+
+exports.getAllblogs=(req,res)=> {
+    Blogs.find({}).exec((err, blogs) => {
+        res.json(blogs)
+    })
+} 
+
+//ดึงข้อมูลบทความอ้างอิงตาม slug
+
+exports.singleBlog=(req,res) => {
+    const {slug} = req.params
+    Blogs.findOne({slug}).exec((err, blog) => {
+        res.json(blog)
+    })
+}
