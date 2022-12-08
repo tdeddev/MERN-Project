@@ -4,6 +4,7 @@ import NavbarComponent from "./NavbarComponent"
 
 const SingleComponent=(props)=>{
     const [blog,setBlog] = useState('')
+
     useEffect(() => {
         axios
         .get(`${process.env.REACT_APP_API}/blog/${props.match.params.slug}`)
@@ -11,8 +12,8 @@ const SingleComponent=(props)=>{
             setBlog(response.data)
         })
         .catch(err=>alert(err))
+        // eslint-disable-next-line
     },[])
-
     return(
         <div className="Container p-5">
             <NavbarComponent/>

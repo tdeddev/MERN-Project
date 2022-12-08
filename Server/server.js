@@ -4,6 +4,7 @@ const cors = require('cors')
 const mongoose = require('mongoose')
 require('dotenv').config()
 const blogRoute = require('./routes/blog')
+const authRoute = require('./routes/auth')
 
 
 const app = express()
@@ -12,9 +13,9 @@ const app = express()
 
 mongoose.connect(process.env.DATABASE,{
     useNewUrlParser:true,
-    useUnifiedToPology:false
-}).then(()=> console.log("Connected Database success!!"))
-.catch((err) =>console.log(err))
+    useUnifiedTopology:false
+}).then(() => console.log("เชือมต่อแล้ว")
+).catch((err) => console.log(err))
 
 
 /* Middleware */
@@ -24,6 +25,7 @@ app.use(morgan("dev"))
 
 /* Route */
 app.use('/api',blogRoute)
+app.use('/api',authRoute)
 
 const port = process.env.PORT || 8080
 app.listen(port, () => console.log(`start server in port ${port}`))

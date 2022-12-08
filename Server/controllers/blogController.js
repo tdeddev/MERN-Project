@@ -2,6 +2,7 @@
 const slugify = require('slugify')
 const Blogs = require('../models/blogs')
 const {v4: uuidv4} = require('uuid')
+const { json } = require('express')
 // Save Data
 exports.create = (req, res) => {
     const {title,content,author} = req.body
@@ -41,6 +42,26 @@ exports.getAllblogs=(req,res)=> {
 exports.singleBlog=(req,res) => {
     const {slug} = req.params
     Blogs.findOne({slug}).exec((err, blog) => {
+        res.json(blog)
+    })
+}
+
+exports.remove=(req,res) => {
+    const {slug} =req.params
+    Blogs.findOneAndRemove({slug}).exec((err, blog) => {
+        if(err) throw err
+        res.json({
+            message:"ลบบทความเรียบร้อย"
+        })
+    })
+}
+
+exports.edit=(req,res)=>{
+    const {slug} = req.params
+    // ส่งข้อมูลเดิม => title, content, author
+    const { title, content, author} = req.body
+    Blogs.findOneAndUpdate({slug},{title,content,author},{new:true}).exec((err, blog) => {
+        if(err) throw err
         res.json(blog)
     })
 }
